@@ -41,7 +41,7 @@ void loop() {
   float duration,distance;
   
   digitalWrite(trig,HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(100);
   digitalWrite(trig,LOW);    //傳High~low會使感測器發出超音波
   duration = pulseIn(echo,HIGH); //接收超音波多久回來
   distance = duration/2/29;     //換成距離
@@ -49,8 +49,8 @@ void loop() {
   if(Serial.available()>0){
     String str;
     str=Serial.readString();
-    if(str[0]=='+'){
-      lcd.begin(16, 4);  //1604
+    if(str[0]=='r'){      //重設INCH
+      lcd.clear();
       lcd.setCursor(0,0);
       while(true){
         if(Serial.available()>0){
@@ -60,13 +60,13 @@ void loop() {
       }
     }
     else{
-      level = atoi(&str[1]);
+      level = atoi(&str[1]);       //等級提升
     }
   }
   react(inch,distance);
 }
 
-void react(float inch, float dist)
+void react(float inch, float dist)      //反應距離， 等級
 {
   inch = inch*3.81;
   if(inch+15<dist){
@@ -74,13 +74,17 @@ void react(float inch, float dist)
     lcd.print("Too Distant !");
     Serial.print("3\n");
     digitalWrite(green,LOW);
+    digitalWrite(red,LOW);
+    digitalWrite(blue,HIGH);
   }
-  else if (dist<inch-15)
+  else if (dist<inch-30)
   {
     lcd.setCursor(0,0); 
     lcd.print("Too Close !  ");
     Serial.print("2\n");
     digitalWrite(green,LOW);
+    digitalWrite(red,HIGH);
+    digitalWrite(blue,LOW);
   }
   else
   {
@@ -88,6 +92,8 @@ void react(float inch, float dist)
     lcd.print("Just right ! ");
     Serial.print("1\n");
     digitalWrite(green,HIGH);
+    digitalWrite(red,LOW);
+    digitalWrite(blue,LOW);
   }
   
 
