@@ -15,11 +15,6 @@ int level=1;
 
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
 
-bool moderateDist(float inch, float dist){
-  inch = inch*3.81;
-  return dist<=10;
-}
-
 void setup() {
   // put your setup code here, to run once:
   lcd.begin(16, 4);  //1604
